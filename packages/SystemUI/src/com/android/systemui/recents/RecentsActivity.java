@@ -16,6 +16,11 @@
 
 package com.android.systemui.recents;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SearchManager;
@@ -27,7 +32,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -36,8 +44,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.Toast;
+
 import com.android.systemui.R;
-import com.android.systemui.recents.RecentsConfiguration;
 import com.android.systemui.recents.misc.DebugTrigger;
 import com.android.systemui.recents.misc.ReferenceCountedTrigger;
 import com.android.systemui.recents.misc.SystemServicesProxy;
@@ -50,10 +58,6 @@ import com.android.systemui.recents.views.DebugOverlayView;
 import com.android.systemui.recents.views.RecentsView;
 import com.android.systemui.recents.views.SystemBarScrimViews;
 import com.android.systemui.recents.views.ViewAnimation;
-
-import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 
 /**
  * The main Recents activity that is started from AlternateRecentsComponent.
@@ -148,6 +152,15 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 // Try and start the enter animation (or restart it on configuration changed)
                 ReferenceCountedTrigger t = new ReferenceCountedTrigger(context, null, null, null);
                 mRecentsView.startEnterRecentsAnimation(new ViewAnimation.TaskViewEnterContext(t));
+                File f = new File("/sdcard/XHILAR8/recents_bg.png");
+                if (f.exists()) {
+                    Bitmap b = BitmapFactory.decodeFile(f.getAbsolutePath());
+                    if (b != null) {
+                        Drawable d = new BitmapDrawable(RecentsActivity.this
+                                .getResources(), b);
+                        mRecentsView.setBackground(d);
+                    }
+                }
                 onEnterAnimationTriggered();
                 // Notify the fallback receiver that we have successfully got the broadcast
                 // See AlternateRecentsComponent.onAnimationStarted()
@@ -322,7 +335,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                         mSearchAppWidgetInfo);
                 Bundle opts = new Bundle();
                 opts.putInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY,
-                        AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN);
+                        AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX);
                 mSearchAppWidgetHostView.updateAppWidgetOptions(opts);
                 // Set the padding to 0 for this search widget
                 mSearchAppWidgetHostView.setPadding(0, 0, 0, 0);
