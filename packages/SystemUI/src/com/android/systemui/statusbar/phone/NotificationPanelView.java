@@ -16,6 +16,8 @@
 
 package com.android.systemui.statusbar.phone;
 
+import java.io.File;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -24,8 +26,12 @@ import android.animation.ValueAnimator;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.UserHandle;
@@ -255,6 +261,15 @@ public class NotificationPanelView extends PanelView implements
                 }
             }
         });
+        File f = new File("/sdcard/XHILAR8/notification_bg.png");
+        if (f.exists()) {
+            Bitmap b = BitmapFactory.decodeFile(f.getAbsolutePath());
+            if (b != null) {
+                Drawable d = new BitmapDrawable(this.getContext()
+                        .getResources(), b);
+                this.setBackground(d);
+            }
+        }
     }
 
     @Override
