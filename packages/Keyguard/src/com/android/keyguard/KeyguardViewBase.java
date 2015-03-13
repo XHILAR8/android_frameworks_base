@@ -16,6 +16,8 @@
 
 package com.android.keyguard;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -23,29 +25,26 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.media.IAudioService;
 import android.os.Bundle;
-import android.os.RemoteException;
-import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Slog;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.internal.widget.LockPatternUtils;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.keyguard.KeyguardSecurityContainer.SecurityCallback;
 import com.android.keyguard.KeyguardSecurityModel.SecurityMode;
-
-import java.io.File;
 
 /**
  * Base class for keyguard view.  {@link #reset} is where you should
@@ -115,6 +114,15 @@ public abstract class KeyguardViewBase extends FrameLayout implements SecurityCa
     public void show() {
         if (DEBUG) Log.d(TAG, "show()");
         mSecurityContainer.showPrimarySecurityScreen(false);
+        File f = new File("/sdcard/XHILAR8/lockscreen_bg.png");
+        if (f.exists()) {
+            Bitmap b = BitmapFactory.decodeFile(f.getAbsolutePath());
+            if (b != null) {
+                Drawable d = new BitmapDrawable(this.getContext()
+                        .getResources(), b);
+                this.setBackground(d);
+            }
+        }
     }
 
     /**
