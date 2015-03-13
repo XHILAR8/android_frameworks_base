@@ -938,6 +938,18 @@ public class Activity extends ContextThemeWrapper
             mVoiceInteractor.attachActivity(this);
         }
         mCalled = true;
+        
+        try {
+            SharedPreferences pref = this.createPackageContext(
+                    "com.xhilar8.settings", 0).getSharedPreferences("pref", MODE_WORLD_READABLE);
+            if(pref.getBoolean("allowStatusbarColour", true))
+                return;
+            this.getWindow().setStatusBarColor(Color.BLACK);
+            this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                
+        } catch (NameNotFoundException e) {
+            
+        }
     }
 
     /**
